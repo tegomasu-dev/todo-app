@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>やること一覧</title>
+  </head>
+  <body>
+    <h1>やること一覧</h1>
+    <p><a href="{{ url_for('new') }}">新しく登録</a></p>
+    {% if todos %}
+    <ul>
+      {% for todo in todos %}
+      <li>
+        <strong>{{ todo.title }}</strong>
+        （期日 {{ todo.due_date }}）<br />
+        {{ todo.content }}
+        <a href="{{ url_for('edit', todo_id=todo.id) }}">編集</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>まだありません。</p>
+    {% endif %}
+  </body>
+</html>

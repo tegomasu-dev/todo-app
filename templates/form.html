@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>登録・編集</title>
+  </head>
+  <body>
+    <h1>{% if mode == "new" %}登録{% else %}編集{% endif %}</h1>
+    <form method="post">
+      <p>
+        タイトル<br />
+        <input name="title" value="{{ todo.title if todo else '' }}" required />
+      </p>
+      <p>
+        内容<br />
+        <textarea name="content" required>{{ todo.content if todo else '' }}</textarea>
+      </p>
+      <p>
+        期日<br />
+        <input type="date" name="due_date" value="{{ todo.due_date if todo else '' }}" required />
+      </p>
+      <button type="submit">保存</button>
+    </form>
+    <p><a href="{{ url_for('index') }}">一覧へ戻る</a></p>
+  </body>
+</html>
