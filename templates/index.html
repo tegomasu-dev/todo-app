@@ -3,18 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <title>やること一覧</title>
+    <style>
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        font-weight: bold;
+        margin-right: 6px;
+      }
+      .priority-高 {
+        background-color: #fde8e8;
+        color: #b91c1c;
+        border: 1px solid #f8b4b4;
+      }
+      .priority-中 {
+        background-color: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fcd34d;
+      }
+      .priority-低 {
+        background-color: #e0f2fe;
+        color: #075985;
+        border: 1px solid #7dd3fc;
+      }
+      .nav-bar {
+        margin: 10px 0;
+      }
+      .nav-bar a {
+        margin-right: 10px;
+      }
+      .nav-bar .active {
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .todo-item {
+        margin-bottom: 12px;
+      }
+      .completed {
+        text-decoration: line-through;
+        color: #888888;
+      }
+      .inline-form {
+        display: inline;
+        margin-left: 6px;
+      }
+      .notice-ok {
+        color: #065f46;
+        background-color: #d1fae5;
+        padding: 6px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        margin: 6px 0;
+      }
+      .notice-err {
+        color: #991b1b;
+        background-color: #fee2e2;
+        padding: 6px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        margin: 6px 0;
+      }
+    </style>
   </head>
   <body>
     <h1>やること一覧</h1>
-    <p><a href="{{ url_for('new') }}">新しく登録</a></p>
+
+    {% if notified == "sent" %}
+    <div class="notice-ok">LINEにタスク通知を送信しました！</div><br />
+    {% elif notified == "error" %}
+    <div class="notice-err">LINE送信に失敗しました。環境変数やトークンを確認してください。</div><br />
+    {% endif %}
+
+    <p>
+      <a href="{{ url_for('new') }}">新しく登録</a>
+      <form action="{{ url_for('notify_due_tasks', sort=current_sort, status=current_status) }}" method="post" class="inline-form">
+        <button type="submit">今日のタスクをLINEに送る</button>
+      </form>
+    </p>
+
+    <div class="nav-bar">
+      表示：
+      <a href="{{ url_for('index', sort=current_sort, status='all') }}" class="{% if current_status == 'all' %}active{% endif %}">すべて表示</a>
+      <a href="{{ url_for('index', sort=current_sort, status='incomplete') }}" class="{% if current_status == 'incomplete' %}active{% endif %}">未完了のみ表示</a>
+    </div>
+
+    <div class="nav-bar">
+      並び替え：
+      <a href="{{ url_for('index', sort='default', status=current_status) }}" class="{% if current_sort == 'default' %}active{% endif %}">登録順</a>
+      <a href="{{ url_for('index', sort='due_date', status=current_status) }}" class="{% if current_sort == 'due_date' %}active{% endif %}">期日が近い順</a>
+      <a href="{{ url_for('index', sort='priority', status=current_status) }}" class="{% if current_sort == 'priority' %}active{% endif %}">重要度が高い順</a>
+    </div>
+
     {% if todos %}
     <ul>
       {% for todo in todos %}
-      <li>
-        <strong>{{ todo.title }}</strong>
-        （期日 {{ todo.due_date }}）<br />
-        {{ todo.content }}
+      <li class="todo-item">
+        <span class="badge priority-{{ todo.priority }}">重要度：{{ todo.priority }}</span>
+        <span class="{% if todo.status == '完了' %}completed{% endif %}">
+          <strong>{{ todo.title }}</strong>
+          （期日 {{ todo.due_date }}）<br />
+          {{ todo.content }}
+        </span>
         <a href="{{ url_for('edit', todo_id=todo.id) }}">編集</a>
+
+        <form action="{{ url_for('toggle_status', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form">
+          <button type="submit">
+            {% if todo.status == '完了' %}未完了に戻す{% else %}完了にする{% endif %}
+          </button>
+        </form>
+
+        <form action="{{ url_for('delete_todo', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form" onsubmit="return confirm('このタスクを削除しますか？');">
+          <button type="submit">削除</button>
+        </form>
       </li>
       {% endfor %}
     </ul>

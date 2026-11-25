@@ -19,6 +19,15 @@
         期日<br />
         <input type="date" name="due_date" value="{{ todo.due_date if todo else '' }}" required />
       </p>
+      <p>
+        重要度<br />
+        {% set current_priority = todo.priority if todo and todo.priority else '中' %}
+        <select name="priority" required>
+          <option value="高" {% if current_priority == '高' %}selected{% endif %}>高</option>
+          <option value="中" {% if current_priority == '中' %}selected{% endif %}>中</option>
+          <option value="低" {% if current_priority == '低' %}selected{% endif %}>低</option>
+        </select>
+      </p>
       <button type="submit">保存</button>
     </form>
     <p><a href="{{ url_for('index') }}">一覧へ戻る</a></p>
