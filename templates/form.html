@@ -2,34 +2,127 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>登録・編集</title>
+    <style>
+      :root {
+        --blue: #2563eb;
+        --blue-dark: #1d4ed8;
+        --blue-light: #eff6ff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #d1d5db;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 24px 16px 48px;
+        background: #f3f6fb;
+        color: var(--text);
+        font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+        line-height: 1.6;
+      }
+      .container { max-width: 560px; margin: 0 auto; }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 16px;
+        color: var(--blue-dark);
+      }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 24px 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid var(--blue);
+      }
+      .field { margin-bottom: 18px; }
+      label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      input, textarea, select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+        color: var(--text);
+        background: #fff;
+      }
+      textarea { min-height: 110px; resize: vertical; }
+      input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      }
+      .buttons {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 22px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        background: var(--blue);
+        color: #fff;
+        font-family: inherit;
+      }
+      .btn:hover { background: var(--blue-dark); }
+      .btn-gray {
+        background: #fff;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-gray:hover { background: #f9fafb; }
+    </style>
   </head>
   <body>
-    <h1>{% if mode == "new" %}登録{% else %}編集{% endif %}</h1>
-    <form method="post">
-      <p>
-        タイトル<br />
-        <input name="title" value="{{ todo.title if todo else '' }}" required />
-      </p>
-      <p>
-        内容<br />
-        <textarea name="content" required>{{ todo.content if todo else '' }}</textarea>
-      </p>
-      <p>
-        期日<br />
-        <input type="date" name="due_date" value="{{ todo.due_date if todo else '' }}" required />
-      </p>
-      <p>
-        重要度<br />
-        {% set current_priority = todo.priority if todo and todo.priority else '中' %}
-        <select name="priority" required>
-          <option value="高" {% if current_priority == '高' %}selected{% endif %}>高</option>
-          <option value="中" {% if current_priority == '中' %}selected{% endif %}>中</option>
-          <option value="低" {% if current_priority == '低' %}selected{% endif %}>低</option>
-        </select>
-      </p>
-      <button type="submit">保存</button>
-    </form>
-    <p><a href="{{ url_for('index') }}">一覧へ戻る</a></p>
+    <div class="container">
+      <h1>{% if mode == "new" %}登録{% else %}編集{% endif %}</h1>
+
+      <div class="card">
+        <form method="post">
+          <div class="field">
+            <label for="title">タイトル</label>
+            <input id="title" name="title" value="{{ todo.title if todo else '' }}" required />
+          </div>
+
+          <div class="field">
+            <label for="content">内容</label>
+            <textarea id="content" name="content" required>{{ todo.content if todo else '' }}</textarea>
+          </div>
+
+          <div class="field">
+            <label for="due_date">期日</label>
+            <input id="due_date" type="date" name="due_date" value="{{ todo.due_date if todo else '' }}" required />
+          </div>
+
+          <div class="field">
+            <label for="priority">重要度</label>
+            {% set current_priority = todo.priority if todo and todo.priority else '中' %}
+            <select id="priority" name="priority" required>
+              <option value="高" {% if current_priority == '高' %}selected{% endif %}>高</option>
+              <option value="中" {% if current_priority == '中' %}selected{% endif %}>中</option>
+              <option value="低" {% if current_priority == '低' %}selected{% endif %}>低</option>
+            </select>
+          </div>
+
+          <div class="buttons">
+            <button type="submit" class="btn">保存</button>
+            <a href="{{ url_for('index') }}" class="btn btn-gray">一覧へ戻る</a>
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
 </html>
