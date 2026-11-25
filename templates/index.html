@@ -2,125 +2,220 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>やること一覧</title>
     <style>
+      :root {
+        --blue: #2563eb;
+        --blue-dark: #1d4ed8;
+        --blue-light: #eff6ff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 24px 16px 48px;
+        background: #f3f6fb;
+        color: var(--text);
+        font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+        line-height: 1.6;
+      }
+      .container { max-width: 720px; margin: 0 auto; }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 16px;
+        color: var(--blue-dark);
+      }
+
+      .notice-ok, .notice-err {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+      }
+      .notice-ok { background: #d1fae5; color: #065f46; }
+      .notice-err { background: #fee2e2; color: #991b1b; }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        background: var(--blue);
+        color: #fff;
+        font-family: inherit;
+      }
+      .btn:hover { background: var(--blue-dark); }
+      .btn-outline {
+        background: #fff;
+        color: var(--blue);
+        border: 1px solid var(--blue);
+      }
+      .btn-outline:hover { background: var(--blue-light); }
+      .btn-danger {
+        background: #fff;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+      }
+      .btn-danger:hover { background: #fef2f2; }
+      .btn-gray {
+        background: #fff;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-gray:hover { background: #f9fafb; }
+      .btn-sm { padding: 5px 12px; font-size: 0.82rem; }
+
+      .nav-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 10px;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+      .nav-label { margin-right: 4px; }
+      .nav-bar a {
+        padding: 4px 12px;
+        border-radius: 999px;
+        text-decoration: none;
+        color: var(--blue);
+        background: #fff;
+        border: 1px solid var(--border);
+      }
+      .nav-bar a:hover { background: var(--blue-light); }
+      .nav-bar a.active {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue);
+        font-weight: 600;
+      }
+
+      ul { list-style: none; margin: 20px 0 0; padding: 0; }
+      .todo-item {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid var(--blue);
+      }
+      .todo-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .todo-title { font-size: 1.05rem; font-weight: 700; }
+      .due { font-size: 0.85rem; color: var(--muted); }
+      .content { color: var(--muted); font-size: 0.92rem; margin: 4px 0 12px; }
+      .todo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .inline-form { display: inline; margin: 0; }
+
       .badge {
         display: inline-block;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.85em;
-        font-weight: bold;
-        margin-right: 6px;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
       }
-      .priority-高 {
-        background-color: #fde8e8;
-        color: #b91c1c;
-        border: 1px solid #f8b4b4;
-      }
-      .priority-中 {
-        background-color: #fef3c7;
-        color: #92400e;
-        border: 1px solid #fcd34d;
-      }
-      .priority-低 {
-        background-color: #e0f2fe;
-        color: #075985;
-        border: 1px solid #7dd3fc;
-      }
-      .nav-bar {
-        margin: 10px 0;
-      }
-      .nav-bar a {
-        margin-right: 10px;
-      }
-      .nav-bar .active {
-        font-weight: bold;
-        text-decoration: none;
-      }
-      .todo-item {
-        margin-bottom: 12px;
-      }
-      .completed {
-        text-decoration: line-through;
-        color: #888888;
-      }
-      .inline-form {
-        display: inline;
-        margin-left: 6px;
-      }
-      .notice-ok {
-        color: #065f46;
-        background-color: #d1fae5;
-        padding: 6px 10px;
-        border-radius: 4px;
-        display: inline-block;
-        margin: 6px 0;
-      }
-      .notice-err {
-        color: #991b1b;
-        background-color: #fee2e2;
-        padding: 6px 10px;
-        border-radius: 4px;
-        display: inline-block;
-        margin: 6px 0;
+      .priority-高 { background: #fee2e2; color: #b91c1c; }
+      .priority-中 { background: #fef3c7; color: #92400e; }
+      .priority-低 { background: #dbeafe; color: #1e40af; }
+
+      .completed { opacity: 0.55; border-left-color: #9ca3af; }
+      .completed .todo-title,
+      .completed .content,
+      .completed .due { text-decoration: line-through; }
+
+      .empty {
+        text-align: center;
+        color: var(--muted);
+        padding: 32px 0;
+        background: #fff;
+        border-radius: 12px;
       }
     </style>
   </head>
   <body>
-    <h1>やること一覧</h1>
+    <div class="container">
+      <h1>やること一覧</h1>
 
-    {% if notified == "sent" %}
-    <div class="notice-ok">LINEにタスク通知を送信しました！</div><br />
-    {% elif notified == "error" %}
-    <div class="notice-err">LINE送信に失敗しました。環境変数やトークンを確認してください。</div><br />
-    {% endif %}
+      {% if notified == "sent" %}
+      <div class="notice-ok">LINEにタスク通知を送信しました！</div>
+      {% elif notified == "error" %}
+      <div class="notice-err">LINE送信に失敗しました。環境変数やトークンを確認してください。</div>
+      {% endif %}
 
-    <p>
-      <a href="{{ url_for('new') }}">新しく登録</a>
-      <form action="{{ url_for('notify_due_tasks', sort=current_sort, status=current_status) }}" method="post" class="inline-form">
-        <button type="submit">今日のタスクをLINEに送る</button>
-      </form>
-    </p>
-
-    <div class="nav-bar">
-      表示：
-      <a href="{{ url_for('index', sort=current_sort, status='all') }}" class="{% if current_status == 'all' %}active{% endif %}">すべて表示</a>
-      <a href="{{ url_for('index', sort=current_sort, status='incomplete') }}" class="{% if current_status == 'incomplete' %}active{% endif %}">未完了のみ表示</a>
-    </div>
-
-    <div class="nav-bar">
-      並び替え：
-      <a href="{{ url_for('index', sort='default', status=current_status) }}" class="{% if current_sort == 'default' %}active{% endif %}">登録順</a>
-      <a href="{{ url_for('index', sort='due_date', status=current_status) }}" class="{% if current_sort == 'due_date' %}active{% endif %}">期日が近い順</a>
-      <a href="{{ url_for('index', sort='priority', status=current_status) }}" class="{% if current_sort == 'priority' %}active{% endif %}">重要度が高い順</a>
-    </div>
-
-    {% if todos %}
-    <ul>
-      {% for todo in todos %}
-      <li class="todo-item">
-        <span class="badge priority-{{ todo.priority }}">重要度：{{ todo.priority }}</span>
-        <span class="{% if todo.status == '完了' %}completed{% endif %}">
-          <strong>{{ todo.title }}</strong>
-          （期日 {{ todo.due_date }}）<br />
-          {{ todo.content }}
-        </span>
-        <a href="{{ url_for('edit', todo_id=todo.id) }}">編集</a>
-
-        <form action="{{ url_for('toggle_status', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form">
-          <button type="submit">
-            {% if todo.status == '完了' %}未完了に戻す{% else %}完了にする{% endif %}
-          </button>
+      <div class="actions">
+        <a href="{{ url_for('new') }}" class="btn">＋ 新しく登録</a>
+        <form action="{{ url_for('notify_due_tasks', sort=current_sort, status=current_status) }}" method="post" class="inline-form">
+          <button type="submit" class="btn btn-outline">今日のタスクをLINEに送る</button>
         </form>
+      </div>
 
-        <form action="{{ url_for('delete_todo', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form" onsubmit="return confirm('このタスクを削除しますか？');">
-          <button type="submit">削除</button>
-        </form>
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>まだありません。</p>
-    {% endif %}
+      <div class="nav-bar">
+        <span class="nav-label">表示</span>
+        <a href="{{ url_for('index', sort=current_sort, status='all') }}" class="{% if current_status == 'all' %}active{% endif %}">すべて</a>
+        <a href="{{ url_for('index', sort=current_sort, status='incomplete') }}" class="{% if current_status == 'incomplete' %}active{% endif %}">未完了のみ</a>
+      </div>
+
+      <div class="nav-bar">
+        <span class="nav-label">並び替え</span>
+        <a href="{{ url_for('index', sort='default', status=current_status) }}" class="{% if current_sort == 'default' %}active{% endif %}">登録順</a>
+        <a href="{{ url_for('index', sort='due_date', status=current_status) }}" class="{% if current_sort == 'due_date' %}active{% endif %}">期日が近い順</a>
+        <a href="{{ url_for('index', sort='priority', status=current_status) }}" class="{% if current_sort == 'priority' %}active{% endif %}">重要度が高い順</a>
+      </div>
+
+      {% if todos %}
+      <ul>
+        {% for todo in todos %}
+        <li class="todo-item {% if todo.status == '完了' %}completed{% endif %}">
+          <div class="todo-head">
+            <span class="badge priority-{{ todo.priority }}">重要度：{{ todo.priority }}</span>
+            <span class="todo-title">{{ todo.title }}</span>
+            <span class="due">期日 {{ todo.due_date or '未設定' }}</span>
+          </div>
+          <div class="content">{{ todo.content }}</div>
+
+          <div class="todo-actions">
+            <form action="{{ url_for('toggle_status', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form">
+              <button type="submit" class="btn btn-sm">
+                {% if todo.status == '完了' %}未完了に戻す{% else %}完了にする{% endif %}
+              </button>
+            </form>
+
+            <a href="{{ url_for('edit', todo_id=todo.id) }}" class="btn btn-sm btn-gray">編集</a>
+
+            <form action="{{ url_for('delete_todo', todo_id=todo.id, sort=current_sort, status=current_status) }}" method="post" class="inline-form" onsubmit="return confirm('このタスクを削除しますか？');">
+              <button type="submit" class="btn btn-sm btn-danger">削除</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="empty">まだありません。</p>
+      {% endif %}
+    </div>
   </body>
 </html>
